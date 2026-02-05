@@ -41,25 +41,29 @@ export default function Home() {
 
     audio.volume = 0.15;
 
-    const unlockAudio = () => {
-      audio.play().catch(() => {});
+    const startAudio = async () => {
+      try {
+        await audio.play();
+      } catch {}
 
-      // try again after tiny delay (important on Vercel)
+      // force play again after small delay (important)
       setTimeout(() => {
         audio.play().catch(() => {});
-      }, 200);
-
-      window.removeEventListener("click", unlockAudio);
-      window.removeEventListener("mousemove", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
+      }, 100);
     };
 
-    // wait for ANY interaction
-    window.addEventListener("click", unlockAudio, { once: true });
-    window.addEventListener("mousemove", unlockAudio, { once: true });
-    window.addEventListener("keydown", unlockAudio, { once: true });
-    window.addEventListener("touchstart", unlockAudio, { once: true });
+    // must be inside real user gesture
+    const handleFirstInteraction = () => {
+      startAudio();
+
+      window.removeEventListener("pointerdown", handleFirstInteraction);
+      window.removeEventListener("keydown", handleFirstInteraction);
+      window.removeEventListener("touchstart", handleFirstInteraction);
+    };
+
+    window.addEventListener("pointerdown", handleFirstInteraction);
+    window.addEventListener("keydown", handleFirstInteraction);
+    window.addEventListener("touchstart", handleFirstInteraction);
   }, []);
 
   // cursor glow
