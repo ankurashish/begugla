@@ -28,6 +28,9 @@ export default function Home() {
   const audioRef = useRef(null);
   const playerRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
+  const audioUnlocked = useRef(false);
+
+  
 
 
   // random text
@@ -36,24 +39,7 @@ export default function Home() {
     setThought(thoughts[Math.floor(Math.random() * thoughts.length)]);
   }, []);
 
-  // 🎵 AUTO MUSIC (no button)
-  useEffect(() => {
-  const audio = audioRef.current;
-  if (!audio) return;
-
-  audio.volume = 0.15;
-  audio.muted = true;
-
-  const start = () => {
-    audio.muted = isMuted;
-    audio.play().catch(() => {});
-  };
-
-  window.addEventListener("click", start, { once: true });
-
-  return () => window.removeEventListener("click", start);
-}, []);
-
+  
 
   // cursor glow
   useEffect(() => {
@@ -151,36 +137,42 @@ export default function Home() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
-      {/* REAL MUTE BUTTON */}
+      <audio ref={audioRef} src="/music/bgm.mp3" loop preload="auto" />
+
+      {/* REAL ONE-CLICK MUTE BUTTON */}
       <button
-        onClick={() => {
-          const audio = audioRef.current;
-          if (!audio) return;
+  onClick={() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
-          if (isMuted) {
-            audio.muted = false;
-            audio.play().catch(() => {});
-          } else {
-            audio.muted = true;
-          }
+    audio.volume = 0.15;
 
-          setIsMuted(!isMuted);
-        }}
-        className="absolute top-12 right-12 z-30 w-14 h-14
-  rounded-full bg-gray-500/50 backdrop-blur-md
+    // first click → start music
+    if (!audioUnlocked.current) {
+      audio.muted = false;
+      audio.play().catch(() => {});
+      audioUnlocked.current = true;
+      setIsMuted(false);
+      return;
+    }
+
+    // after start → toggle mute
+    audio.muted = !audio.muted;
+    setIsMuted(audio.muted);
+  }}
+  className="absolute top-6 right-6 z-40 w-10 h-10
+  rounded-full bg-black/50 backdrop-blur-md
   flex items-center justify-center
   hover:scale-110 transition"
-      >
-        {isMuted ? "🔇" : "🔊"}
-      </button>
+>
+  {isMuted ? "🔇" : "🔊"}
+</button>
+
 
       <canvas
         id="particles"
         className="fixed inset-0 pointer-events-none z-10"
       />
-
-      {/* 🎵 MUSIC */}
-      <audio ref={audioRef} src="/music/bgm.mp3" loop preload="auto" />
 
       {/* BACKGROUND */}
       <video
