@@ -27,6 +27,8 @@ export default function Home() {
 
   const audioRef = useRef(null);
   const playerRef = useRef(null);
+  const [isMuted, setIsMuted] = useState(true);
+
 
   // random text
   useEffect(() => {
@@ -36,35 +38,22 @@ export default function Home() {
 
   // 🎵 AUTO MUSIC (no button)
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+  const audio = audioRef.current;
+  if (!audio) return;
 
-    audio.volume = 0.15;
+  audio.volume = 0.15;
+  audio.muted = true;
 
-    const startAudio = async () => {
-      try {
-        await audio.play();
-      } catch {}
+  const start = () => {
+    audio.muted = isMuted;
+    audio.play().catch(() => {});
+  };
 
-      // force play again after small delay (important)
-      setTimeout(() => {
-        audio.play().catch(() => {});
-      }, 100);
-    };
+  window.addEventListener("click", start, { once: true });
 
-    // must be inside real user gesture
-    const handleFirstInteraction = () => {
-      startAudio();
+  return () => window.removeEventListener("click", start);
+}, []);
 
-      window.removeEventListener("pointerdown", handleFirstInteraction);
-      window.removeEventListener("keydown", handleFirstInteraction);
-      window.removeEventListener("touchstart", handleFirstInteraction);
-    };
-
-    window.addEventListener("pointerdown", handleFirstInteraction);
-    window.addEventListener("keydown", handleFirstInteraction);
-    window.addEventListener("touchstart", handleFirstInteraction);
-  }, []);
 
   // cursor glow
   useEffect(() => {
@@ -162,15 +151,29 @@ export default function Home() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
+      {/* REAL MUTE BUTTON */}
       <button
-  
-  className="absolute top-10 right-10 z-30 w-14 h-14
-  rounded-full bg-black/50 backdrop-blur-md
+        onClick={() => {
+          const audio = audioRef.current;
+          if (!audio) return;
+
+          if (isMuted) {
+            audio.muted = false;
+            audio.play().catch(() => {});
+          } else {
+            audio.muted = true;
+          }
+
+          setIsMuted(!isMuted);
+        }}
+        className="absolute top-12 right-12 z-30 w-14 h-14
+  rounded-full bg-gray-500/50 backdrop-blur-md
   flex items-center justify-center
   hover:scale-110 transition"
->
-   🔊
-</button>
+      >
+        {isMuted ? "🔇" : "🔊"}
+      </button>
+
       <canvas
         id="particles"
         className="fixed inset-0 pointer-events-none z-10"
