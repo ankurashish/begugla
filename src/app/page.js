@@ -162,6 +162,15 @@ export default function Home() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
+      <button
+  
+  className="absolute top-10 right-10 z-30 w-14 h-14
+  rounded-full bg-black/50 backdrop-blur-md
+  flex items-center justify-center
+  hover:scale-110 transition"
+>
+   🔊
+</button>
       <canvas
         id="particles"
         className="fixed inset-0 pointer-events-none z-10"
