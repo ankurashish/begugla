@@ -160,12 +160,12 @@ export default function Home() {
     audio.muted = !audio.muted;
     setIsMuted(audio.muted);
   }}
-  className="absolute top-6 right-6 z-40 w-10 h-10
-  rounded-full bg-black/50 backdrop-blur-md
+  className="absolute top-12 right-12 z-40 w-14 h-14
+  rounded-full bg-gray-500/50 backdrop-blur-md
   flex items-center justify-center
   hover:scale-110 transition"
 >
-  {isMuted ? "🔇" : "🔊"}
+  {isMuted ? "🔊" : "🔇"}
 </button>
 
 
