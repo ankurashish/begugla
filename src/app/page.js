@@ -42,16 +42,23 @@ export default function Home() {
     audio.volume = 0.15;
     audio.muted = true;
 
+    // try autoplay muted
     audio.play().catch(() => {});
 
-    const unmute = () => {
+    const startAudio = () => {
       audio.muted = false;
-      window.removeEventListener("click", unmute);
-      window.removeEventListener("mousemove", unmute);
+      audio.play().catch(() => {});
+
+      window.removeEventListener("click", startAudio);
+      window.removeEventListener("mousemove", startAudio);
+      window.removeEventListener("keydown", startAudio);
+      window.removeEventListener("touchstart", startAudio);
     };
 
-    window.addEventListener("click", unmute);
-    window.addEventListener("mousemove", unmute);
+    window.addEventListener("click", startAudio);
+    window.addEventListener("mousemove", startAudio);
+    window.addEventListener("keydown", startAudio);
+    window.addEventListener("touchstart", startAudio);
   }, []);
 
   // cursor glow
@@ -182,12 +189,10 @@ export default function Home() {
       <img
         src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjZvZXEzZzQxcno1ZmQ3NjVxOGwycXRmdXM1bWxhcms0cWRqc3VtcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3VLajsSQMEMxvQQv8N/giphy.gif"
         className="absolute top-10 left-10 w-28 float brightness-90 contrast-125 opacity-80"
-
       />
       <img
         src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExczRsMDdnZno0NmI0cjE0d2Z5NjdlZTZpMHEzazc3YWdvajA5Z3E1ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RGyUJwAFjP38P3uEiV/giphy.gif"
         className="absolute bottom-25 right-20 w-32 floatSlow brightness-90 contrast-125 opacity-80"
-
       />
 
       {/* PLAYER */}
