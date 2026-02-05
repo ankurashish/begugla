@@ -40,25 +40,26 @@ export default function Home() {
     if (!audio) return;
 
     audio.volume = 0.15;
-    audio.muted = true;
 
-    // try autoplay muted
-    audio.play().catch(() => {});
-
-    const startAudio = () => {
-      audio.muted = false;
+    const unlockAudio = () => {
       audio.play().catch(() => {});
 
-      window.removeEventListener("click", startAudio);
-      window.removeEventListener("mousemove", startAudio);
-      window.removeEventListener("keydown", startAudio);
-      window.removeEventListener("touchstart", startAudio);
+      // try again after tiny delay (important on Vercel)
+      setTimeout(() => {
+        audio.play().catch(() => {});
+      }, 200);
+
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("mousemove", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
     };
 
-    window.addEventListener("click", startAudio);
-    window.addEventListener("mousemove", startAudio);
-    window.addEventListener("keydown", startAudio);
-    window.addEventListener("touchstart", startAudio);
+    // wait for ANY interaction
+    window.addEventListener("click", unlockAudio, { once: true });
+    window.addEventListener("mousemove", unlockAudio, { once: true });
+    window.addEventListener("keydown", unlockAudio, { once: true });
+    window.addEventListener("touchstart", unlockAudio, { once: true });
   }, []);
 
   // cursor glow
@@ -163,7 +164,7 @@ export default function Home() {
       />
 
       {/* 🎵 MUSIC */}
-      <audio ref={audioRef} src="/music/bgm.mp3" loop autoPlay />
+      <audio ref={audioRef} src="/music/bgm.mp3" loop preload="auto" />
 
       {/* BACKGROUND */}
       <video
