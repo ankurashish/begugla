@@ -30,16 +30,19 @@ export default function Home() {
   const [isMuted, setIsMuted] = useState(true);
   const audioUnlocked = useRef(false);
 
-  
+  const [visits, setVisits] = useState(null);
 
+  useEffect(() => {
+    fetch("/api/visits")
+      .then((res) => res.json())
+      .then((data) => setVisits(data.count));
+  }, []);
 
   // random text
   useEffect(() => {
     setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
     setThought(thoughts[Math.floor(Math.random() * thoughts.length)]);
   }, []);
-
-  
 
   // cursor glow
   useEffect(() => {
@@ -141,33 +144,32 @@ export default function Home() {
 
       {/* REAL ONE-CLICK MUTE BUTTON */}
       <button
-  onClick={() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+        onClick={() => {
+          const audio = audioRef.current;
+          if (!audio) return;
 
-    audio.volume = 0.15;
+          audio.volume = 0.15;
 
-    // first click → start music
-    if (!audioUnlocked.current) {
-      audio.muted = false;
-      audio.play().catch(() => {});
-      audioUnlocked.current = true;
-      setIsMuted(false);
-      return;
-    }
+          // first click → start music
+          if (!audioUnlocked.current) {
+            audio.muted = false;
+            audio.play().catch(() => {});
+            audioUnlocked.current = true;
+            setIsMuted(false);
+            return;
+          }
 
-    // after start → toggle mute
-    audio.muted = !audio.muted;
-    setIsMuted(audio.muted);
-  }}
-  className="absolute top-12 right-12 z-40 w-14 h-14
+          // after start → toggle mute
+          audio.muted = !audio.muted;
+          setIsMuted(audio.muted);
+        }}
+        className="absolute top-12 right-12 z-40 w-14 h-14
   rounded-full bg-gray-500/50 backdrop-blur-md
   flex items-center justify-center
   hover:scale-110 transition"
->
-  {isMuted ? "🔊" : "🔇"}
-</button>
-
+      >
+        {isMuted ? "🔊" : "🔇"}
+      </button>
 
       <canvas
         id="particles"
@@ -312,6 +314,9 @@ export default function Home() {
             </p>
           </div>
         </div>
+      </div>
+      <div className="absolute bottom-6 right-6 text-sm text-purple-300 bg-black/40 px-3 py-1 rounded-lg backdrop-blur">
+        👁 {visits ?? "..."} visitors
       </div>
     </main>
   );
