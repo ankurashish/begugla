@@ -315,7 +315,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="absolute bottom-6 right-6 text-sm text-purple-300 bg-black/40 px-3 py-1 rounded-lg backdrop-blur">
+      <div className="absolute bottom-6 left-6 text-sm text-purple-300 bg-black/40 px-3 py-1 rounded-lg backdrop-blur">
         👁 {visits ?? "..."} visitors
       </div>
     </main>
