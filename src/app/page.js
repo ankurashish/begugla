@@ -31,6 +31,7 @@ export default function Home() {
   const audioUnlocked = useRef(false);
 
   const [visits, setVisits] = useState(null);
+  const [theme, setTheme] = useState("cyber");
 
   useEffect(() => {
     fetch("/api/visits")
@@ -137,6 +138,33 @@ export default function Home() {
     window.addEventListener("keydown", move);
     return () => window.removeEventListener("keydown", move);
   }, []);
+  const themes = {
+    cyber: {
+      video: "/background/alt.mp4",
+      music: "/music/alt.mp3",
+      title: "I Really Want to Stay at Your House",
+      artist: "Rosa Walton",
+      cover: "https://i.ytimg.com/vi/h4VJGNNSQnw/maxresdefault.jpg",
+    },
+    alt: {
+      video: "/background/background.mp4",
+      music: "/music/bgm.mp3",
+      title: "The Lost Soul Down X Lost Soul",
+      artist: "NBSPLV",
+      cover: "https://i.ytimg.com/vi/LMda9kzKTJc/hq720.jpg",
+    },
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    audio.src = themes[theme].music;
+
+    if (audioUnlocked.current) {
+      audio.play().catch(() => {});
+    }
+  }, [theme]);
 
   return (
     <main className="relative w-screen h-screen overflow-hidden text-white">
@@ -168,7 +196,14 @@ export default function Home() {
   flex items-center justify-center
   hover:scale-110 transition"
       >
-        {isMuted ? "🔊" : "🔇"}
+        {isMuted ? "🔇" : "🔊"}
+      </button>
+      <button
+        onClick={() => setTheme(theme === "cyber" ? "alt" : "cyber")}
+        className="absolute top-12 right-28 z-40
+  px-4 py-4 rounded-full bg-gray-500/50 backdrop-blur-md hover:scale-110 transition"
+      >
+        {theme === "cyber" ? "🌙 ChainSaw Man" : "🌆 CyberPunk"}
       </button>
 
       <canvas
@@ -178,7 +213,7 @@ export default function Home() {
 
       {/* BACKGROUND */}
       <video
-        src="/background/background.mp4"
+        src={themes[theme].video}
         className="absolute inset-0 w-full h-full object-cover scale-110"
         autoPlay
         loop
@@ -197,21 +232,21 @@ export default function Home() {
       />
 
       {/* FLOAT */}
-      <img
+      {/* <img
         src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExbjZvZXEzZzQxcno1ZmQ3NjVxOGwycXRmdXM1bWxhcms0cWRqc3VtcSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3VLajsSQMEMxvQQv8N/giphy.gif"
         className="absolute top-10 left-10 w-28 float brightness-90 contrast-125 opacity-80"
       />
       <img
         src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExczRsMDdnZno0NmI0cjE0d2Z5NjdlZTZpMHEzazc3YWdvajA5Z3E1ciZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/RGyUJwAFjP38P3uEiV/giphy.gif"
         className="absolute bottom-25 right-20 w-32 floatSlow brightness-90 contrast-125 opacity-80"
-      />
+      /> */}
 
       {/* PLAYER */}
-      <img
+      {/* <img
         ref={playerRef}
         src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMmJ3MTV4bXowcW1waGJoa2hnbjhiYTl2cXFrYnY3dGQ4bXgyYXR6eCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/mhfqfSii6aBk3AUWY3/giphy.gif"
         className="absolute w-24 left-0 top-0"
-      />
+      /> */}
 
       {/* UI */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full gap-6 text-center">
@@ -223,7 +258,7 @@ export default function Home() {
           <span className="absolute bottom-3 right-3 w-6 h-6 bg-green-500 rounded-full border-4 border-black" />
         </div>
 
-        <h1 className="text-6xl font-bold text-purple-400">beguglaa</h1>
+        <h1 className="text-6xl font-bold text-purple-400">begugla</h1>
         <p className="text-xl opacity-80">chronically online</p>
 
         <div className="flex gap-4 mt-4">
@@ -231,7 +266,7 @@ export default function Home() {
             href="https://discord.com/users/914184818487595079"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 rounded-full bg-[#5865F2]"
+            className="px-5 py-2 rounded-full bg-[#5865F2]/50 backdrop-blur-md hover:scale-110 transition "
           >
             Discord
           </a>
@@ -239,7 +274,7 @@ export default function Home() {
             href="https://www.instagram.com/ankurduke/"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 rounded-full bg-pink-500"
+            className="px-5 py-2 rounded-full bg-pink-500/50 backdrop-blur-md hover:scale-110 transition"
           >
             Instagram
           </a>
@@ -247,7 +282,7 @@ export default function Home() {
             href="https://www.ankurashish.in/"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2 rounded-full bg-yellow-500"
+            className="px-5 py-2 rounded-full bg-yellow-500/50 backdrop-blur-md hover:scale-110 transition"
           >
             Portfolio
           </a>
@@ -256,9 +291,9 @@ export default function Home() {
         <div className="italic text-purple-300">"{quote}"</div>
         <div className="opacity-70">🧠 {thought}</div>
 
-        <p className="text-sm opacity-60 text-black font-bold bg-gray-50">
+        {/* <p className="text-sm opacity-60 text-black font-bold bg-gray-50">
           WASD to move
-        </p>
+        </p> */}
       </div>
 
       <style>{`
@@ -271,17 +306,14 @@ export default function Home() {
       `}</style>
       {/* RIGHT SIDE MUSIC PLAYER */}
       <div className="absolute right-6 bottom-6 z-20 flex items-center gap-3 px-4 py-3 rounded-xl bg-black/40 backdrop-blur-md border border-purple-500/20 shadow-xl">
-        <img
-          src="https://i.ytimg.com/vi/h4VJGNNSQnw/maxresdefault.jpg"
-          className="w-12 h-12 rounded-md"
-        />
+        <img src={themes[theme].cover} className="w-12 h-12 rounded-md" />
 
         <div className="text-left">
           <p className="text-xs text-purple-300">Now Playing</p>
           <p className="text-sm font-semibold leading-tight">
-            I Really Want to Stay at Your House
+            {themes[theme].title}
           </p>
-          <p className="text-xs opacity-70">Rosa Walton</p>
+          <p className="text-xs opacity-70">{themes[theme].artist}</p>
         </div>
 
         <div className="ml-2 text-green-400 animate-pulse">●</div>
@@ -291,7 +323,7 @@ export default function Home() {
         {/* toggle */}
         <button
           onClick={() => setGalleryOpen(!galleryOpen)}
-          className="w-16 h-16 bg-purple-600 rounded-r-xl shadow-lg flex items-center justify-center"
+          className="w-16 h-16 bg-purple-600/50 backdrop-blur-md hover:scale-110 transition rounded-r-xl shadow-lg flex items-center justify-center"
         >
           🖼 Gallery
         </button>
